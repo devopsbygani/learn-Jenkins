@@ -62,7 +62,7 @@ pipeline {
                 expression { params.CHOICE == 'One' }
             }
             steps {
-                echo 'hello world from Deploy'
+                echo 'hello from Deploy'
             }
         }
     }
