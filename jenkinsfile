@@ -59,7 +59,7 @@ pipeline {
         }
         stage('Deploy') {
             when {
-                expression { params.CHOICE == 'Two' }
+                expression { params.CHOICE == 'One' }
             }
             steps {
                 echo 'hello world from Deploy'
