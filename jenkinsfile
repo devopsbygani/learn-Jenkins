@@ -1,11 +1,17 @@
 pipeline {
     agent {
-        label 'AGENT-1' }
+        label 'AGENT-1' 
+    }
+    
+    options { 
+        timeout(time: 10, unit: 'SECONDS')  # set a time period for a pipeline to run. if execeed abort the pipeline.
+    }
 
     stages {
         stage('Build') {
             steps {
                 echo 'hello world from build'
+                sh 'sleep 100'
             }
         }
         stage('Test') {
