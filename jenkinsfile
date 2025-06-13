@@ -41,7 +41,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'hello world from build'
-                sh 'sleep 100'
+                // sh 'sleep 100'
             }
         }
         stage('Test') {
