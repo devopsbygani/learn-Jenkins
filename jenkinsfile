@@ -6,6 +6,7 @@ pipeline {
                 scripts {
                     sh """
                     docker build -t nginx:v1 .
+                    docker image
                     """
                 }
             }
