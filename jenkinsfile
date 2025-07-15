@@ -6,5 +6,11 @@ pipeline {
                 docker build -t nginx:v1 .
             }
         }
+
+        stage('running image') {
+            steps {
+                docker run -d --name nginx nginx:v1
+            }
+        }
     }
 }
