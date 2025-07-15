@@ -1,19 +1,9 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
+        stage('Build image nginx') {
             steps {
-                echo 'print build'
-            }
-        }
-        stage('Test') {
-            steps {
-                echo 'print test'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'print deploy'
+                docker build -t nginx:v1 .
             }
         }
     }
