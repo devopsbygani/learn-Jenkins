@@ -17,7 +17,7 @@ pipeline {
                 scripts {
                     sh """
                     docker run -d --name nginx nginx:v1
-                     """
+                    """
                 }
             }
         }
