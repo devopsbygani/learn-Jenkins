@@ -3,22 +3,19 @@ pipeline {
     stages {
         stage('Build image nginx') {
             steps {
-                scripts {
-                    sh """
-                    docker build -t nginx:v1 .
-                    docker image
-                    """
-                }
+                sh """
+                docker build -t nginx:v1 .
+                docker image
+                """
             }
         }
+        
 
         stage('running image') {
             steps {
-                scripts {
-                    sh """
-                    docker run -d --name nginx nginx:v1
-                    """
-                }
+                sh """
+                docker run -d --name nginx nginx:v1
+                """
             }
         }
     }
