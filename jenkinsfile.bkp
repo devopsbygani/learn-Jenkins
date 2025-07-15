@@ -1,0 +1,86 @@
+pipeline {
+    agent {
+        label 'AGENT-1' 
+    }
+    
+    options { 
+        timeout(time: 10, unit: 'MINUTES')  // set a time period for a pipeline to run. if execeed abort the pipeline.
+        retry(3)  // retries these many times on failure.
+        timestamps() // time at which pipeline run
+    }
+
+    parameters { 
+
+        string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+
+        text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
+
+        booleanParam(name: 'HEY', defaultValue: true, description: 'Toggle this value')
+
+        choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
+
+        password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
+    }
+
+
+    stages {
+
+        stage ('parameters_refer') {
+            steps {
+                echo "Hello ${params.PERSON}"
+
+                echo "Biography: ${params.BIOGRAPHY}"
+
+                echo "Toggle: ${params.TOGGLE}"
+
+                echo "Choice: ${params.CHOICE}"
+
+                echo "Password: ${params.PASSWORD}"       
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                echo 'hello world from build'
+                // sh 'sleep 100'
+            }
+        }
+        stage('Test') {
+
+            input {
+                message "Should we continue?"
+                ok "Yes, we should."
+            }
+
+            steps {
+                
+                echo 'hello world from test'
+            }
+        }
+        stage('Deploy') {
+            when {
+                expression { params.CHOICE == 'One' }
+            }
+            steps {
+                echo 'hello from Deploy'
+            }
+        }
+    }
+
+    post { 
+        always { 
+            echo 'Deleting workspace artifacts...!'  // this always executes if pipeline fail or success.
+            deleteDir()
+
+        }
+
+        failure {
+            echo 'I willsay Hello if pipeline fail!'  // this will executes if pipeline fail
+        }
+
+        success {
+            echo 'I willsay Hello if pipeline success!'  // this will executes if pipeline success
+        }
+
+    }
+}
