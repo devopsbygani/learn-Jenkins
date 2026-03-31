@@ -1,0 +1,82 @@
+pipeline {
+    agent {
+        label 'agent1'
+    }
+
+    parameters {
+        choice(name:'action' , choices: ['create','delete'])
+        string(name:'image',description:'provide image name ', defaultValue:'frontend')
+        string(name:'version',description:'provide image version ', defaultValue:'v1')
+    }
+
+    stages {
+        stage ('Git Checkout') {
+            when{ expression { params.action == 'create'} }
+            steps {
+                gitcheckout (
+                    branch: "main"
+                    url: "https://github.com/praveen1994dec/Java_app_3.0.git"
+                )
+
+            }
+        }
+
+        stage ('unit test maven') {
+            when { expression { params.action == 'create'} }
+            steps{
+                // sh 'mvn test'
+                script {
+                    mvntest()
+                }
+            }
+        }
+
+        stage ('unit test integration') {
+            when { expression { params.action == 'create'} }
+            steps {
+                script {
+                    mvntestintegration()
+                }
+            }
+        }
+
+        stage ('mvn build'){
+            when { expression {params.action == 'create'} }
+            steps {
+                script {
+                    sh 'mvn clean install -DskipTests'
+                }
+            }
+        } 
+
+        stage ('docker build') {
+            when { expression { params.action == 'create'}}
+            steps {
+                sh """
+                 docker build -t ${params.image}:${params.version} .
+                 docker images
+                 """
+            }
+        }
+
+        stage ('image scan trivy'){
+            when { expression { params.action == 'create'} }
+            steps {
+                sh """
+                trivy image ${params.image}:${params.version} > scan.txt
+                cat scan.txt
+                """
+            }
+        }
+
+        stage ('docker image push') {
+            when { expression { params.action == 'create'}}
+            steps {
+                sh """
+                docker push ${params.image}:${params.version}
+                """
+            }
+        }
+
+    }
+}
